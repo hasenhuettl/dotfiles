@@ -48,8 +48,11 @@ cp -r "$FOLDER/Files/local/.ssh" ".ssh"
 # Copy .custom.zsh from template (if not exists)
 [ ! -e .config.custom/zsh/custom.zsh ] && cp .config.custom/zsh/.custom.zsh.template .config.custom/zsh/custom.zsh
 
+bash "$HOME/.config.custom/scripts/install_nvim.sh"
+
 # Ask for terminal restart
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-echo "${BLUE}Please restart your terminal to apply changes."
+BLUE="$(tput setaf 4)"
+NC="$(tput sgr0)"
+
+printf "%sPlease restart your terminal to apply changes.%s\n" "$BLUE" "$NC"
 
