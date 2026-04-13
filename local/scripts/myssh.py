@@ -202,9 +202,9 @@ def rsync_remote_files():
     """Sync config files to remote target."""
     try:
         print(f"{Fore.CYAN}[⌘_⌘] Syncing config files to remote...{Style.RESET_ALL}")
-        config_local = os.path.expandvars("$HOME/git/wsl-terminal-setup/Files/remote/.config.custom/")
+        config_local = os.path.expandvars("$HOME/git/dotfiles/remote/.config.custom/")
         config_remote = f"{ARGS.target}:.config.custom/"
-        terminfo_local = os.path.expandvars("$HOME/git/wsl-terminal-setup/Files/remote/.terminfo/")
+        terminfo_local = os.path.expandvars("$HOME/git/dotfiles/remote/.terminfo/")
         terminfo_remote = f"{ARGS.target}:.terminfo/"
         if (ARGS.verbose):
             my_args="-rEtLzv"
