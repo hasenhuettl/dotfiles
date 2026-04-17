@@ -1,46 +1,32 @@
 return {
-  'numToStr/Comment.nvim',
+  'echasnovski/mini.comment',
   opts = {
-    ---Add a space b/w comment and the line
-    padding = true,
-    ---Whether the cursor should stay at its position
-    sticky = true,
-    ---Lines to be ignored while (un)comment
-    ignore = nil,
-    ---LHS of toggle mappings in NORMAL mode
-    toggler = {
-      ---Line-comment toggle keymap
-      line = 'gcc',
-      ---Block-comment toggle keymap
-      block = 'gbc',
+    -- Options which control module behavior
+    options = {
+      -- Function to compute custom 'commentstring' (optional)
+      custom_commentstring = nil,
+      -- Whether to ignore blank lines when commenting
+      ignore_blank_line = false,
+      -- Whether to recognize as comment only lines without indent
+      start_only = false,
+      -- Whether to ensure single space pad for comment parts
+      pad_comment_parts = true, -- replaces `padding = true`
     },
-    ---LHS of operator-pending mappings in NORMAL and VISUAL mode
-    opleader = {
-      ---Line-comment keymap
-      line = 'gc',
-      ---Block-comment keymap
-      block = 'gb',
-    },
-    ---LHS of extra mappings
-    extra = {
-      ---Add comment on the line above
-      above = 'gcO',
-      ---Add comment on the line below
-      below = 'gco',
-      ---Add comment at the end of line
-      eol = 'gcA',
-    },
-    ---Enable keybindings
-    ---NOTE: If given `false` then the plugin won't create any mappings
+    -- Module mappings. Use `''` (empty string) to disable one.
     mappings = {
-      ---Operator-pending mapping; `gcc` `gbc` `gc[count]{motion}` `gb[count]{motion}`
-      basic = true,
-      ---Extra mapping; `gco`, `gcO`, `gcA`
-      extra = true,
+      -- Toggle comment (like `gcc` / `gbc`) on current line
+      comment_line = 'gcc',       -- was toggler.line
+      -- Toggle comment on visual selection or text object
+      comment = 'gc',             -- was opleader.line
+      -- Toggle block comment
+      comment_visual = 'gc',
+      -- Define 'comment' textobject (like `dgc` to delete comment)
+      textobject = 'gc',
     },
-    ---Function to call before (un)comment
-    pre_hook = nil,
-    ---Function to call after (un)comment
-    -- post_hook = nil,
-  }
+    -- Hook functions to be executed at certain stage of commenting
+    hooks = {
+      pre = nil,   -- was pre_hook
+      post = nil,  -- was post_hook
+    },
+  },
 }
