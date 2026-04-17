@@ -6,7 +6,7 @@ set -euo pipefail
 basic_tools=(curl tar)
 useful_tools=(wget git)
 terminal_handling=(tmux bash zsh rsync)
-neovim_dependencies=(fzf fd-find ripgrep luarocks python3-pip)
+neovim_dependencies=(fzf fd-find ripgrep luarocks python3-pip python3-venv)
 
 echoandrun() {
   echo "\$ $*" ;
