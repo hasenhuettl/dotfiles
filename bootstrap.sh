@@ -2,8 +2,6 @@
 
 set -e
 
-FOLDER=$HOME/git/dotfiles
-
 # Define files to backup
 files=(.bashrc .ssh .config.custom scripts)
 
@@ -35,15 +33,15 @@ for file in "${files[@]}"; do
 done
 
 # Create symlinks
-ln -s "$FOLDER/Files/local/.config.custom" ".config.custom"
-ln -s ".config.custom/bash/.bashrc" ".bashrc"
 ln -s "git/dotfiles/local/scripts" "scripts"
+ln -s "git/dotfiles/local/.config.custom" ".config.custom"
+ln -s ".config.custom/bash/.bashrc" ".bashrc"
 
 # SSH browser link protocol handling
-sudo ln -sf "$HOME/scripts/ssh-url.sh" "/usr/local/bin/ssh-url"
+sudo ln -sf "scripts/ssh-url.sh" "/usr/local/bin/ssh-url"
 
 # Copy ssh config
-cp -r "$FOLDER/Files/local/.ssh" ".ssh"
+cp -r "git/dotfiles/local/.ssh" ".ssh"
 
 # Copy .custom.zsh from template (if not exists)
 [ ! -e .config.custom/zsh/custom.zsh ] && cp .config.custom/zsh/.custom.zsh.template .config.custom/zsh/custom.zsh
