@@ -124,7 +124,7 @@ def open_control_master(config):
             [
                 "ssh", "-M", "-N", "-f",
                 "-o", f"ControlPath={control_path}",
-                f"{config.user}@{config.host}",
+                f"{config.user}@{ARGS.target}",
                 "-p", str(config.port)
             ],
             check=False,
