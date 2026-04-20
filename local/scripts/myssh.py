@@ -42,6 +42,7 @@ class Config:
 
 DATA_DIR = Path.home() / ".local" / "share" / "ssh"
 BLACKLIST_FILE = DATA_DIR / "hosts_without_multiplexing.txt"
+TRANSFERLIST_FILE = DATA_DIR / "hosts_with_file_transfer.txt"
 CONTROLMASTER_ACTIVE = False
 ARGS = None
 SESSION = None
@@ -124,7 +125,7 @@ def open_control_master(config):
             [
                 "ssh", "-M", "-N", "-f",
                 "-o", f"ControlPath={control_path}",
-                f"{config.user}@{ARGS.target}",
+                f"{ARGS.target}",
                 "-p", str(config.port)
             ],
             check=False,
@@ -169,16 +170,32 @@ def detect_config():
             return Config(user, host, "22")
         return Config(getpass.getuser(), ARGS.target, "22")
 
-def load_blacklist():
-    """Load blacklist file"""
-    if BLACKLIST_FILE.exists():
-        return set(line.strip() for line in BLACKLIST_FILE.read_text().splitlines() if line.strip())
+def load_file(my_file):
+    """Load file"""
+    if my_file.exists():
+        return set(line.strip() for line in my_file.read_text().splitlines() if line.strip())
     return set()
 
-def save_to_blacklist(entry):
-    """Write host to blacklist"""
-    with open(BLACKLIST_FILE, "a") as f:
+def save_to_file(my_file, entry):
+    """Write entry to file"""
+    with open(my_file, "a") as f:
         f.write(entry + "\n")
+
+def prompt_save_to_file(my_file, entry):
+    """Ask user, if entry should be saved to file"""
+    try:
+        while True:
+            ch = click.getchar().lower()
+            if ch == "y":
+                save_to_file(my_file, entry)
+                print(f"\n{Fore.GREEN}[✓] Entry {entry} added to {my_file}.{Style.RESET_ALL}")
+                return True
+            elif ch == "n":
+                print(f"\n{Fore.MAGENTA}[~] Skipped file entry for {entry}.{Style.RESET_ALL}")
+                return False
+    except KeyboardInterrupt:
+        print(f"{Fore.YELLOW}\n✋ Process interrupted by user.{Style.RESET_ALL}")
+        cleanup()
 
 def nothing_found(command):
     """Print that command did not exist"""
@@ -221,20 +238,14 @@ def prompt_blacklist(config):
     """Ask user wheter to add current host to blacklist"""
     print(f"{Fore.YELLOW}[x.x] Host '{config.host}' does not appear to support SSH ControlMaster. Consider adding it to blacklist file {BLACKLIST_FILE}.{Style.RESET_ALL}")
     print(f"Do you want to add '{config.host}' in blacklist file so further connections only use basic ssh? (y/n): ")
+    prompt_save_to_file(BLACKLIST_FILE, config.host)
 
-    try:
-        while True:
-            ch = click.getchar().lower()
-            if ch == "y":
-                save_to_blacklist(config.host)
-                print(f"\n{Fore.GREEN}[✓] Host {config.host} added to {BLACKLIST_FILE}.{Style.RESET_ALL}")
-                return True
-            elif ch == "n":
-                print(f"\n{Fore.MAGENTA}[~] Skipping blacklist for {config.host}.{Style.RESET_ALL}")
-                return False
-    except KeyboardInterrupt:
-        print(f"{Fore.YELLOW}\n✋ Process interrupted by user.{Style.RESET_ALL}")
-        cleanup()
+def prompt_transferlist(config):
+    """Ask user wheter to add current host to always transfer files list"""
+    print(f"{Fore.YELLOW}[ಠ_ಠ] Trying to connect as user {config.user}, without --transfer parameter.{Style.RESET_ALL}")
+    print(f"{Fore.YELLOW}[x.x] If you want, you can set to always transfer files to host '{config.host}'.{Style.RESET_ALL}")
+    print(f"Do you want to always rsync your config files to host '{config.host}'? (y/n): ")
+    prompt_save_to_file(TRANSFERLIST_FILE, config.host)
 
 def run_ssh_multiplexer():
     """Open ssh session, then open remote bash with custom config to start terminal multiplexer"""
@@ -300,7 +311,7 @@ def main():
 
     config = detect_config()
 
-    blacklist = load_blacklist()
+    blacklist = load_file(BLACKLIST_FILE)
 
     if config.host in blacklist:
         print(f"{Fore.YELLOW}[x.x] Host {config.host} previously blacklisted as no SSH ControlMaster in {BLACKLIST_FILE}{Style.RESET_ALL}")
@@ -316,16 +327,26 @@ def main():
         CONTROLMASTER_ACTIVE = open_control_master(config)
         if not CONTROLMASTER_ACTIVE:
             prompt_blacklist(config)
-            blacklist = load_blacklist()
+            blacklist = load_file(BLACKLIST_FILE)
             if config.host in blacklist:
                 run_ssh()
+
+    transferlist = load_file(TRANSFERLIST_FILE)
 
     # Remote shell launcher logic
     print(f"{Fore.CYAN}[~_⊙] Checking available remote terminal multiplexer...{Style.RESET_ALL}")
     if ( check_remote_command("tmux") or check_remote_command("screen") ):
         if (ARGS.transfer is False and config.user != os.environ.get("USER") ):
-            # Skip config transfer if force_transfer argument is false and user is not the same
-            print(f"{Fore.YELLOW}[ಠ_ಠ] Connecting as user {config.user}, skipping config transfer. Use --transfer to force transfer config...{Style.RESET_ALL}")
+            if config.host in transferlist:
+                # Host is set to always transfer files
+                rsync_remote_files()
+            else:
+                prompt_transferlist(config)
+                transferlist = load_file(TRANSFERLIST_FILE)
+                if config.host in transferlist:
+                    rsync_remote_files()
+                else:
+                    print(f"{Fore.YELLOW}[ಠ_ಠ] Connecting as user {config.user}, skipping config transfer...{Style.RESET_ALL}")
         else:
             rsync_remote_files()
         run_ssh_multiplexer()
