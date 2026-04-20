@@ -15,20 +15,15 @@ cd git
 
 cd ~
 
-# Check for existing backups first
-for file in "${files[@]}"; do
-  backup="$file.pre-dotfiles"
-  if [ -e "$backup" ]; then
-    echo "Error: $backup already exists. Aborting to prevent overwrite." >&2
-    exit 1
-  fi
-done
+# Generate current timestamp
+timestamp=$(date +"%Y%m%d-%H%M%S")
 
-# If file exists, do a backup
+# If file exists, do a backup with timestamp
 for file in "${files[@]}"; do
   if [[ -e "$file" ]]; then
-    echo "Moving old $file to $file.pre-dotfiles..."
-    mv "$file" "$file.pre-dotfiles"
+    backup="${file}.pre-dotfiles.${timestamp}"
+    echo "Moving old $file to $backup..."
+    mv "$file" "$backup"
   fi
 done
 
@@ -43,8 +38,9 @@ sudo ln -sf "scripts/ssh-url.sh" "/usr/local/bin/ssh-url"
 # Copy ssh config
 cp -r "git/dotfiles/local/.ssh" ".ssh"
 
-# Copy .custom.zsh from template (if not exists)
+# Copy custom files from template (if not exists)
 [ ! -e .config.custom/zsh/custom.zsh ] && cp .config.custom/zsh/.custom.zsh.template .config.custom/zsh/custom.zsh
+[ ! -e .config.custom/bash/custom.bash ] && cp .config.custom/bash/.custom.bash.template .config.custom/bash/custom.bash
 
 bash "$HOME/.config.custom/scripts/install_nvim.sh"
 

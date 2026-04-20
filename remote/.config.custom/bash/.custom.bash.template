@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# To load color schemes for dark mode users, set to true
+export dark_mode=false
+
