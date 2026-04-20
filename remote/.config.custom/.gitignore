@@ -1,0 +1,8 @@
+bash/custom.bash
+
+zsh/.zlogin
+zsh/.zlogout
+zsh/.histfile
+zsh/.zcompdump
+zsh/.zcompcache
+

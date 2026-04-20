@@ -4,10 +4,14 @@ return {
   priority = 1000,
   config = function()
     -- Color scheme
-    vim.cmd[[colorscheme catppuccin-latte]]
-
-    -- Try enabling this in case of issues? Think it sets the background if its not defined by terminal?
-    vim.opt.background = "light"
+    local dark_mode = os.getenv("dark_mode")
+    if dark_mode == "true" then
+      vim.cmd[[colorscheme catppuccin-frappe]]
+      vim.opt.background = "dark"
+    else
+      vim.cmd[[colorscheme catppuccin-latte]]
+      vim.opt.background = "light"
+    end
 
     -- Enable transparent background while preserving fg and other attributes
     vim.cmd("highlight Normal guibg=NONE")
