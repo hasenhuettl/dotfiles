@@ -2,7 +2,7 @@
 # Usage: cpu.sh
 # Waits 1 second, then displays cpu usage in that second
 
-STAT_FILE="/tmp/cpu.prev"
+STAT_FILE="/tmp/${USER}-cpu.prev"
 
 # Current CPU line
 CURR=$(grep '^cpu ' /proc/stat)

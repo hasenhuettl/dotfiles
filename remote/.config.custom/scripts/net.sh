@@ -3,7 +3,7 @@
 # Execute this every x seconds to display network throughput across all interfaces in that second
 # Very simplistic, calculation is off when script is run e.g. every 1.5 seconds
 
-STAT_FILE="/tmp/net.prev"
+STAT_FILE="/tmp/${USER}-net.prev"
 
 get_totals() {
     awk '!/^ *lo:/ && /:/{rx+=$2; tx+=$10} END{print rx, tx}' /proc/net/dev
