@@ -37,3 +37,6 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' 'm:{A-Z}={a-z}'
 # Additional completion enhancements for speed
 zstyle ':completion:*' verbose false
 
+# Load complist module for menuselect widget
+zmodload -i zsh/complist
+
