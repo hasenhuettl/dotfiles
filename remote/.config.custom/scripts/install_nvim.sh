@@ -6,7 +6,9 @@ set -euo pipefail
 basic_tools=(curl tar)
 useful_tools=(wget git)
 terminal_handling=(tmux bash zsh rsync)
-neovim_dependencies=(fzf fd-find ripgrep luarocks python3-pip python3-venv)
+neovim_dependencies=(fzf fd-find ripgrep luarocks python3-pip)
+ubuntu_dependencies=(python3-venv)
+rhel_dependencies=(python3-virtualenv)
 
 echoandrun() {
   echo "\$ $*" ;
@@ -47,7 +49,8 @@ install_deps() {
         "${basic_tools[@]}" \
         "${useful_tools[@]}" \
         "${terminal_handling[@]}" \
-        "${neovim_dependencies[@]}"
+        "${neovim_dependencies[@]}" \
+        "${ubuntu_dependencies[@]}"
 
       ;;
 
@@ -60,7 +63,8 @@ install_deps() {
         "${basic_tools[@]}" \
         "${useful_tools[@]}" \
         "${terminal_handling[@]}" \
-        "${neovim_dependencies[@]}"
+        "${neovim_dependencies[@]}" \
+        "${rhel_dependencies[@]}"
 
       ;;
 
