@@ -13,7 +13,8 @@ return {
         filetypes = { "sh", "bash" },
         generator = null_ls.generator({
           command = "shellcheck",
-          args = { "--format", "json", "-" },
+          -- follow external files via "source file"
+          args = { "--format", "json", "--external-sources", "--source-path=$DIRNAME", "-" },
           to_stdin = true,
           from_stderr = false,
           format = "json",
