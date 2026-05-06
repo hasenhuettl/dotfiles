@@ -45,6 +45,7 @@ BLACKLIST_FILE = DATA_DIR / "hosts_without_multiplexing.txt"
 TRANSFERLIST_FILE = DATA_DIR / "hosts_with_file_transfer.txt"
 CONTROLMASTER_ACTIVE = False
 ARGS = None
+EXTRA_ARGS= []
 SESSION = None
 WINDOW = None
 
@@ -249,7 +250,7 @@ def prompt_transferlist(config):
 
 def run_ssh_multiplexer():
     """Open ssh session, then open remote bash with custom config to start terminal multiplexer"""
-    cmd = ["ssh", "-t", ARGS.target, "bash --rcfile $HOME/.config.custom/bash/.bashrc -i"]
+    cmd = ["ssh", "-t", ARGS.target, "bash --rcfile $HOME/.config.custom/bash/.bashrc -i"] + EXTRA_ARGS
     print(f"{Fore.CYAN}[⌘_⌘] Launching custom ssh environment...{Style.RESET_ALL}")
 
     # Disables local keybinds to not interfere with remote bindings
@@ -271,7 +272,7 @@ def run_ssh():
 
     try:
         tmux_rename_window(f"🔐 {ARGS.target}")
-        res = run(["ssh", "-t", ARGS.target], check=False, verbose=ARGS.verbose)
+        res = run(["ssh", "-t", ARGS.target] + EXTRA_ARGS, check=False, verbose=ARGS.verbose)
         if res.returncode != 0:
             print(f"{Fore.RED}[╥﹏╥] Failed to open basic ssh session!{Style.RESET_ALL}")
     except KeyboardInterrupt:
@@ -293,7 +294,8 @@ def main():
     parser.add_argument("-v", "--verbose", action="store_true", help="Print commands before execution (like bash -x)")
     parser.add_argument("--transfer", action="store_true", help="Force transfer of config files to remote location, even for other users than local")
     global ARGS
-    ARGS = parser.parse_args()
+    global EXTRA_ARGS
+    ARGS, EXTRA_ARGS = parser.parse_known_args()
     if not ARGS:
         print(f"{Fore.RED}[╥﹏╥] Could not query script arguments.{Style.RESET_ALL}")
         cleanup()
