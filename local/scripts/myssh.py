@@ -42,7 +42,6 @@ class Config:
 
 DATA_DIR = Path.home() / ".local" / "share" / "ssh"
 BLACKLIST_FILE = DATA_DIR / "hosts_without_multiplexing.txt"
-TRANSFERLIST_FILE = DATA_DIR / "hosts_with_file_transfer.txt"
 CONTROLMASTER_ACTIVE = False
 ARGS = None
 EXTRA_ARGS= []
@@ -206,7 +205,7 @@ def nothing_found(command):
 def check_remote_command(command):
     """Check if command 'hash $command' is available on remote ssh session"""
     try:
-        result = ssh_cmd(f"hash {command}", timeout=1, capture_output=True)
+        result = ssh_cmd(f"hash {command}", timeout=2, capture_output=True)
         if (result.stdout):
             # hash has no output when command exists
             return nothing_found(command)
@@ -240,13 +239,6 @@ def prompt_blacklist(config):
     print(f"{Fore.YELLOW}[x.x] Host '{config.host}' does not appear to support SSH ControlMaster. Consider adding it to blacklist file {BLACKLIST_FILE}.{Style.RESET_ALL}")
     print(f"Do you want to add '{config.host}' in blacklist file so further connections only use basic ssh? (y/n): ")
     prompt_save_to_file(BLACKLIST_FILE, config.host)
-
-def prompt_transferlist(config):
-    """Ask user wheter to add current host to always transfer files list"""
-    print(f"{Fore.YELLOW}[ಠ_ಠ] Trying to connect as user {config.user}, without --transfer parameter.{Style.RESET_ALL}")
-    print(f"{Fore.YELLOW}[x.x] If you want, you can set to always transfer files to host '{config.host}'.{Style.RESET_ALL}")
-    print(f"Do you want to always rsync your config files to host '{config.host}'? (y/n): ")
-    prompt_save_to_file(TRANSFERLIST_FILE, config.host)
 
 def run_ssh_multiplexer():
     """Open ssh session, then open remote bash with custom config to start terminal multiplexer"""
@@ -292,7 +284,6 @@ def main():
     # For parser, action="store_true" will result in default value: FALSE when argument is unspecified.
     parser.add_argument("target", help="SSH target: [USER@]HOST[:PORT]")
     parser.add_argument("-v", "--verbose", action="store_true", help="Print commands before execution (like bash -x)")
-    parser.add_argument("--transfer", action="store_true", help="Force transfer of config files to remote location, even for other users than local")
     global ARGS
     global EXTRA_ARGS
     ARGS, EXTRA_ARGS = parser.parse_known_args()
@@ -333,24 +324,10 @@ def main():
             if config.host in blacklist:
                 run_ssh()
 
-    transferlist = load_file(TRANSFERLIST_FILE)
-
     # Remote shell launcher logic
     print(f"{Fore.CYAN}[~_⊙] Checking available remote terminal multiplexer...{Style.RESET_ALL}")
     if ( check_remote_command("tmux") or check_remote_command("screen") ):
-        if (ARGS.transfer is False and config.user != os.environ.get("USER") ):
-            if config.host in transferlist:
-                # Host is set to always transfer files
-                rsync_remote_files()
-            else:
-                prompt_transferlist(config)
-                transferlist = load_file(TRANSFERLIST_FILE)
-                if config.host in transferlist:
-                    rsync_remote_files()
-                else:
-                    print(f"{Fore.YELLOW}[ಠ_ಠ] Connecting as user {config.user}, skipping config transfer...{Style.RESET_ALL}")
-        else:
-            rsync_remote_files()
+        rsync_remote_files()
         run_ssh_multiplexer()
     else:
         CONTROLMASTER_ACTIVE = controlmaster_check()
