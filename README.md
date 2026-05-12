@@ -83,6 +83,7 @@ My setup was inspired by https://pretalx.linuxtage.at/media/glt25/submissions/JU
 - **Do not give up after initially seeing all the available keybinds.** Start with the basics, and soon you'll learn to love neovim. Trust me.
 
 ### Tools
+You can close/quit the UIs usually via `:q` or `, + q`
 - `, + l` opens Lazy. This is the tool which will install and update our plugins for neovim.
 - `, + m` opens Mason. This is the tool which will install and update our LSP servers for neovim.
 
@@ -90,8 +91,20 @@ My setup was inspired by https://pretalx.linuxtage.at/media/glt25/submissions/JU
 - `Shift + i` to enter a paste-friendly insert mode that disables UI elements that could interfere with pasting text. Press `Escape` to exit this mode.
 - `Spacebar` (LEADER key for the snacks plugin) or `,` (LEADER key for Neovim) to display your shortcuts, e.g., save/quit with `, + w/q` instead of `:w/q`.
 - `gcc` to comment/uncomment the current line based on filetype.
-- Swap between files by pressing `-` to open the Oil file manager, or `Ctrl + n` / `Ctrl + p` to switch to next/previous file.
-- Run `:Inspect` on an element to find out e.g. why the element is a different color, use `:help Command` to see what a command does
+- There are 2 different file explorers available, depending on preference or use case:
+  - `-` for "Oil" file explorer (opens in current directory)
+    - Navigation: `gg`, `G`, `Shift + H/M/L`, `/ + search_string`
+    - `-` to switch to parent directory
+    - `Enter` to select
+    - `:q` or `, + q` to quit
+  - `Space + e` for "Snacks" file explorer (opens at project root)
+    - Navigation: `gg`, `G`, `/ + search_string`
+    - `Shift + H` to show hidden files
+    - `Enter` to select
+    - `Space + e` again, `:q` or `, + q` to quit
+- After changing files, use `Ctrl + n` / `Ctrl + p` to switch to next/previous file.
+- Run `:Inspect` on an element to find out e.g. why the element is a different color
+- `:help Command` to see what a command does (e.g.: `:help gcc`)
 - Hover over e.g. a function, then press `K` to hover docs, `gr` for references
 
 ### Troubleshooting
