@@ -144,10 +144,6 @@ bind2maps             vicmd -- Insert vi-insert
 bind2maps emacs             -- Delete delete-char
 bind2maps       viins vicmd -- Delete vi-delete-char
 
-# Arrow keys: history search
-bind2maps emacs viins vicmd -- Up     up-line-or-search
-bind2maps emacs viins vicmd -- Down   down-line-or-search
-
 # Arrow keys: cursor movement
 bind2maps emacs             -- Left   backward-char
 bind2maps       viins vicmd -- Left   vi-backward-char
