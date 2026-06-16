@@ -106,6 +106,8 @@ You can close/quit the UIs usually via `:q` or `, + q`
 - Run `:Inspect` on an element to find out e.g. why the element is a different color
 - `:help Command` to see what a command does (e.g.: `:help gcc`)
 - Hover over e.g. a function, then press `K` to hover docs, `gr` for references
+- `Gitsigns blame` to see who committed which text part
+- `CTRL + w + w`, or `CTRL + H/J/K/L` to switch between windows (vim)
 
 ### Troubleshooting
 - `:lua Snacks.notifier.show_history()` to display vim notify error history
