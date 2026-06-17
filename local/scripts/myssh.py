@@ -205,7 +205,7 @@ def nothing_found(command):
 def check_remote_command(command):
     """Check if command 'hash $command' is available on remote ssh session"""
     try:
-        result = ssh_cmd(f"hash {command}", timeout=2, capture_output=True)
+        result = ssh_cmd(f"hash {command}", timeout=5, capture_output=True)
         if (result.stdout):
             # hash has no output when command exists
             return nothing_found(command)
