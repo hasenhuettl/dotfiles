@@ -107,12 +107,19 @@ def get_control_path(config):
     """Get path to ControlMaster file for this target."""
     return os.path.expanduser(f"~/.ssh/cm_socket/{config.user}@{config.host}:{config.port}")
 
-def controlmaster_check():
+def controlmaster_check(config):
     """Check if ControlMaster is active for this target."""
     res = run(["ssh", "-O", "check", ARGS.target], check=False, capture_output=True, verbose=ARGS.verbose)
     if res.returncode == 0:
         return True
     else:
+        control_path = get_control_path(config)
+        if os.path.exists(control_path):
+            try:
+                print(f"{Fore.CYAN}[⌘_⌘] Removing stale control socket {control_path}...{Style.RESET_ALL}")
+                os.remove(control_path)
+            except OSError as e:
+                print(f"{Fore.MAGENTA}[X_X] Failed to remove stale control socket: {e}{Style.RESET_ALL}")
         return False
 
 def open_control_master(config):
@@ -125,8 +132,8 @@ def open_control_master(config):
             [
                 "ssh", "-M", "-N", "-f",
                 "-o", f"ControlPath={control_path}",
-                f"{ARGS.target}",
-                "-p", str(config.port)
+                "-p", str(config.port),
+                f"{ARGS.target}"
             ],
             check=False,
             capture_output=True,
@@ -312,7 +319,7 @@ def main():
         run_ssh()
 
     global CONTROLMASTER_ACTIVE
-    CONTROLMASTER_ACTIVE = controlmaster_check()
+    CONTROLMASTER_ACTIVE = controlmaster_check(config)
 
     # Trying to open ControlMaster...
     if not CONTROLMASTER_ACTIVE:
@@ -330,7 +337,7 @@ def main():
         rsync_remote_files()
         run_ssh_multiplexer()
     else:
-        CONTROLMASTER_ACTIVE = controlmaster_check()
+        CONTROLMASTER_ACTIVE = controlmaster_check(config)
         if not CONTROLMASTER_ACTIVE:
             prompt_blacklist(config)
         run_ssh()
