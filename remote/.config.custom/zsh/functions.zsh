@@ -10,6 +10,11 @@ if [ -n "$WSL_DISTRO_NAME" ]; then
   }
 fi
 
+sudoi() {
+  sudo rsync -a "$HOME/.config.custom/" "/root/.config.custom/"
+  sudo -i bash -c "source /root/.config.custom/bash/.bash_profile && exec zsh" -i
+}
+
 sedit() {
   local file="$1"
   local base tmp orig_checksum new_checksum
