@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+trap 'printf "\033[0;31mInstallation failed!\033[0m\n" >&2' ERR
+
 # Packages
 basic_tools=(curl tar)
 useful_tools=(wget git)
