@@ -76,6 +76,9 @@ keymap("n", "<S-i>", ":set nonumber scl=no paste<CR>i", opts) -- Open in paste m
 -- Optional: Instead of inserting indentation, map tab leave insert mode:
 -- keymap("i", "<TAB>", "<Esc>", opts)
 
+-- Toggle tabs or spaces via TAB in normal mode
+keymap("n", "<TAB>", ":set expandtab!<CR>", { desc = "Toggle expandtab" })
+
 -- Terminal --
 -- Better terminal navigation
 -- keymap("t", "<C-h>", "<C-\\><C-N><C-w>h", term_opts)
