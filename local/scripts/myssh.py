@@ -143,14 +143,15 @@ def open_control_master(config):
             tmux_rename_window("[╥﹏╥] Error!")
             print(f"{Fore.RED}[╥﹏╥] SSH command failed!{Style.RESET_ALL}")
             print(f"{Fore.RED}{res.stderr}{Style.RESET_ALL}")
-            print(f"Continue with script? (y/n):")
-            while True:
-                ch = click.getchar().lower()
-                if ch == "y":
-                    return False
-                elif ch == "n":
-                    print(f"{Fore.RED}[╥﹏╥] Exiting...{Style.RESET_ALL}")
-                    cleanup()
+            cleanup()
+            # print(f"Continue with script? (y/n):")
+            # while True:
+            #     ch = click.getchar().lower()
+            #     if ch == "y":
+            #         return False
+            #     elif ch == "n":
+            #         print(f"{Fore.RED}[╥﹏╥] Exiting...{Style.RESET_ALL}")
+            #         cleanup()
     except KeyboardInterrupt:
         print(f"{Fore.YELLOW}\n✋ Process interrupted by user.{Style.RESET_ALL}")
         cleanup()
