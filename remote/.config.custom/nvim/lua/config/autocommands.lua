@@ -96,6 +96,35 @@ vim.cmd([[
 ]])
 
 -- === Lua Autocommands ===
+local ui_enabled = true
+
+function TOGGLE_UI()
+  if ui_enabled then
+    HIDE_UI()
+  else
+    SHOW_UI()
+  end
+end
+
+function HIDE_UI()
+  ui_enabled = false
+  vim.opt.list = false
+  vim.opt.number = false
+  vim.opt.signcolumn = "no"
+  if vim.fn.exists(":IBLDisable") == 2 then
+    vim.cmd("IBLDisable")
+  end
+end
+
+function SHOW_UI()
+  ui_enabled = true
+  vim.opt.list = true
+  vim.opt.number = true
+  vim.opt.signcolumn = "yes"
+  if vim.fn.exists(":IBLEnable") == 2 then
+    vim.cmd("IBLEnable")
+  end
+end
 
 -- Restore last cursor position
 vim.api.nvim_create_autocmd("BufReadPost", {
@@ -117,18 +146,18 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 vim.api.nvim_create_autocmd("InsertEnter", {
   callback = function()
     if vim.o.paste then
-      vim.cmd("IBLDisable")
-      vim.opt.list = false
+      HIDE_UI()
     end
-    if vim.bo.readonly then vim.notify("This file is read-only", vim.log.levels.WARN) end
+    if vim.bo.readonly then
+      vim.notify("This file is read-only", vim.log.levels.WARN)
+    end
   end,
 })
 
 vim.api.nvim_create_autocmd("InsertLeave", {
   callback = function()
-    vim.cmd("IBLEnable")
-    vim.opt.list = true
-    vim.cmd("set nopaste number scl=yes")
+    SHOW_UI()
+    vim.cmd("set nopaste")
   end,
 })
 

@@ -67,17 +67,17 @@ keymap("x", "K", ":m '<-2<CR>gv=gv", opts)
 keymap("x", "<A-j>", ":m '>+1<CR>gv=gv", opts)
 keymap("x", "<A-k>", ":m '<-2<CR>gv=gv", opts)
 
--- Toggle line numbers with Ctrl-i
-keymap("n", "<C-i>", ":set nu!<CR>", opts)
-
 -- Paste mode (will be cleared upon leaving edit mode via autocommand!)
-keymap("n", "<S-i>", ":set nonumber scl=no paste<CR>i", opts) -- Open in paste mode with Shift-i
+keymap("n", "<S-i>", ":set paste<CR>i", opts) -- Open in paste mode with Shift-i
 
 -- Optional: Instead of inserting indentation, map tab leave insert mode:
 -- keymap("i", "<TAB>", "<Esc>", opts)
 
--- Toggle tabs or spaces via TAB in normal mode
-keymap("n", "<TAB>", ":set expandtab!<CR>", { desc = "Toggle expandtab" })
+-- Toggle UI with Tab (or also Ctrl-i depending on terminal)
+keymap("n", "<TAB>", ":lua TOGGLE_UI()<CR>", opts)
+
+-- Toggle tabs or spaces via Shift + TAB in normal mode
+keymap("n", "<S-TAB>", ":set expandtab!<CR>", { desc = "Toggle expandtab" })
 
 -- Terminal --
 -- Better terminal navigation
