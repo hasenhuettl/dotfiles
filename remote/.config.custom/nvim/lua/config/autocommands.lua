@@ -114,6 +114,9 @@ function HIDE_UI()
   if vim.fn.exists(":IBLDisable") == 2 then
     vim.cmd("IBLDisable")
   end
+  if vim.fn.exists(":Gitsigns") == 2 then
+   vim.cmd("Gitsigns toggle_current_line_blame false")
+  end
 end
 
 function SHOW_UI()
@@ -123,6 +126,9 @@ function SHOW_UI()
   vim.opt.signcolumn = "yes"
   if vim.fn.exists(":IBLEnable") == 2 then
     vim.cmd("IBLEnable")
+  end
+  if vim.fn.exists(":Gitsigns") == 2 then
+    vim.cmd("Gitsigns toggle_current_line_blame true")
   end
 end
 
