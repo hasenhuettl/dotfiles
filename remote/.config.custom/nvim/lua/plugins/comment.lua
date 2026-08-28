@@ -4,7 +4,11 @@ return {
     -- Options which control module behavior
     options = {
       -- Function to compute custom 'commentstring' (optional)
-      custom_commentstring = nil,
+      custom_commentstring = function()
+        if vim.bo.filetype == 'systemd' then
+          return '# %s'
+        end
+      end,
       -- Whether to ignore blank lines when commenting
       ignore_blank_line = false,
       -- Whether to recognize as comment only lines without indent
