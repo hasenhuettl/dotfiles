@@ -46,23 +46,11 @@ load_holiday_theme 0207 0214 "valentines.sh"
 # International Women's Day: March 1 – March 8
 load_holiday_theme 0301 0308 "womensday.sh"
 
-# World Health Day: April 1 – April 7
-load_holiday_theme 0401 0407 "healthday.sh"
-
-# Earth Day: April 15 – April 22
-load_holiday_theme 0415 0422 "earthday.sh"
-
 # Mother's Day
 load_holiday_theme "$MOTHERS_START" "$MOTHERS_END" "mothersday.sh"
 
-# World Environment Day: June 1 – June 5
-load_holiday_theme 0601 0605 "environmentday.sh"
-
 # Father's Day
 load_holiday_theme "$FATHERS_START" "$FATHERS_END" "fathersday.sh"
-
-# International Day of Peace: Sept 14 – Sept 21
-load_holiday_theme 0914 0921 "peaceday.sh"
 
 # Halloween: Oct 11 – Oct 31
 load_holiday_theme 1011 1031 "halloween.sh"
