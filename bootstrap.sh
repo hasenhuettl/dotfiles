@@ -33,7 +33,7 @@ ln -s "git/dotfiles/local/.config.custom" ".config.custom"
 ln -s ".config.custom/bash/.bashrc" ".bashrc"
 
 # SSH browser link protocol handling
-sudo ln -sf "scripts/ssh-url.sh" "/usr/local/bin/ssh-url"
+sudo ln -sf "$HOME/scripts/ssh-url.sh" "/usr/local/bin/ssh-url"
 
 # Copy ssh config
 cp -r "git/dotfiles/local/.ssh" ".ssh"
