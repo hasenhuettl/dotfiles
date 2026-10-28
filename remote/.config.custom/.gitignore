@@ -1,5 +1,7 @@
 bash/custom.bash
 
+github-copilot
+
 zsh/.zlogin
 zsh/.zlogout
 zsh/.histfile

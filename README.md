@@ -87,6 +87,16 @@ You can close/quit the UIs usually via `:q` or `, + q`
 - `, + l` opens Lazy. This is the tool which will install and update our plugins for neovim.
 - `, + m` opens Mason. This is the tool which will install and update our LSP servers for neovim.
 
+You can enable github copilot autosuggestions via nrc -> custom.zsh; by setting "export NVIM_COPILOT=true".
+
+Pre-requirements are installed Node.js and NPM, and a Github/Github-Enterprise account.
+
+- When using Github Enterprise, setup custom URL in custom.zsh
+- Start Neovim, and run Copilot setup
+- Usage: Enable autosuggestions via `, + c + p` (cp -> copilot)
+- Insert-Mode: Switch through suggestions with `CTRL + n`
+- Insert-Mode: Accept suggestions with `CTRL + j`
+
 ### Hotkeys
 - `Shift + i` to enter a paste-friendly insert mode that disables UI elements that could interfere with pasting text. Press `Escape` to exit this mode.
 - `Spacebar` (LEADER key for the snacks plugin) or `,` (LEADER key for Neovim) to display your shortcuts, e.g., save/quit with `, + w/q` instead of `:w/q`.

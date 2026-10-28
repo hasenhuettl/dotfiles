@@ -104,12 +104,35 @@ keymap("n", "<leader>tn", ":tabn<CR>") -- go to next tab
 keymap("n", "<leader>tp", ":tabp<CR>") -- go to previous tab
 
 -- Insert brackets
-keymap("n", "<Leader>a", "viw<Esc>bi{{ <Esc>ea }}<Esc>", { noremap = true }) -- " Surround word with {{ when pressing ,a (var in Ansible)
-keymap("n", "<Leader>aq", 'viw<Esc>bi"{{ <Esc>ea }}"<Esc>', { noremap = true }) -- " Same as above, but also enclosed in double quotes "{{var}}"
-keymap("n", "<Leader>b", "viw<Esc>bi(<Esc>ea)<Esc>", { noremap = true }) -- " Enclose in () when pressing ,b (brackets)
-keymap("n", "<Leader>c", "viw<Esc>bi{<Esc>ea}<Esc>", { noremap = true }) -- " Enclose in {} when pressing ,c (curly)
+keymap("n", "<Leader>aa",  "viw<Esc>bi{{ <Esc>ea }}<Esc>", { noremap = true }) -- " Surround word with {{ var }} when pressing ',a'
+keymap("n", "<Leader>aq", 'viw<Esc>bi"{{ <Esc>ea }}"<Esc>', { noremap = true }) -- " Same as above, but also enclosed in double quotes "{{ var }}"
+keymap("n", "<Leader>ab",  "viw<Esc>bi(<Esc>ea)<Esc>", { noremap = true }) -- " Enclose in () when pressing ,b (brackets)
+keymap("n", "<Leader>ac",  "viw<Esc>bi{<Esc>ea}<Esc>", { noremap = true }) -- " Enclose in {} when pressing ,c (curly)
 keymap("n", "<Leader>sq", "viw<Esc>bi'<Esc>ea'<Esc>", { noremap = true }) -- Single quotes with ,sq
 keymap("n", "<Leader>dq", 'viw<Esc>bi"<Esc>ea"<Esc>', { noremap = true }) -- Double quotes with ,dq
+
 --  Insert current hosts IP address at cursor when pressing ,ip
 -- BROKEN vim.api.nvim_set_keymap('n', '<Leader>ip', [[:execute 'normal! i' .. vim.fn.system("ifconfig\\|awk '/broadcast/ {print $2}'")<CR>dd]], { noremap = true })
+
+-- github copilot
+-- Accept suggestion
+keymap("i", "<C-J>", 'copilot#Accept("\\<CR>")', {
+  expr = true,
+  replace_keycodes = false,
+  silent = true,
+})
+
+-- Toggle Copilot
+keymap("n", "<Leader>cp", function()
+  if vim.g.copilot_enabled == 0 then
+    vim.cmd("Copilot enable")
+  else
+    vim.cmd("Copilot disable")
+  end
+end, { desc = "Toggle Copilot" })
+
+-- Optional navigation
+keymap("i", "<C-n>", "<Plug>(copilot-next)")
+keymap("i", "<C-p>", "<Plug>(copilot-previous)")
+keymap("i", "<C-q>", "<Plug>(copilot-dismiss)")
 
