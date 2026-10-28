@@ -15,3 +15,7 @@ if $enable_holidays; then
   source $CONFIG_LOCATION/zsh/holidays.zsh
 fi
 
+if $enable_checks; then
+  source $CONFIG_LOCATION/zsh/checks.zsh
+fi
+

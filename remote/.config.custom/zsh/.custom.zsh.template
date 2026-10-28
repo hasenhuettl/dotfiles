@@ -1,7 +1,17 @@
 # Put custom config (e.g.: aliases) here:
 
-# Output holiday specific greeting
+# Output holiday specific greeting?
 enable_holidays=true
+
+# Use github copilot in neovim?
+export NVIM_COPILOT=true
+# If you use GitHub Enterprise:
+# export COPILOT_ENTERPRISE_URL="https://mydomain.ghe.com"
+
+# Check system health (disk space, etc.)?
+enable_checks=true
+disk_threshold=90 # Percentage
+disk_inode_threshold=90 # Percentage
 
 # general
 alias please='sudo'
