@@ -4,7 +4,7 @@
 enable_holidays=true
 
 # Use github copilot in neovim?
-export NVIM_COPILOT=true
+export NVIM_COPILOT=false
 # If you use GitHub Enterprise:
 # export COPILOT_ENTERPRISE_URL="https://mydomain.ghe.com"
 
