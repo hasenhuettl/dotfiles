@@ -34,10 +34,10 @@ start_tmux () {
   # Only run if session is interactive, and not already inside tmux (Safeguard for infinite shell opening loop)
   if [[ -z "$TMUX" ]]; then
     echo "starting tmux.."
-    # exec tmux new-session -A -s "$USER@$(hostname -s)"
-    exec tmux -f "$TMUX_CONF" new-session -A -s "$USER@$(hostname -s)" -c "$PWD"
-    # tmux -f "$TMUX_CONF" new-session -A -s "$USER@$(hostname -s)" && exit
-    # tmux -f "$TMUX_CONF" new-session -A -s "$USER@$(hostname -s)"
+    # $$ => Bash process (one session per window)
+    SESSION="$USER@$(hostname -s)-$$"
+    # $PWD to open same path as initial bash session
+    exec tmux -f "$TMUX_CONF" new-session -A -s "$SESSION" -c "$PWD"
   else
     echo "Tried to start tmux, but tmux is already running..."
   fi

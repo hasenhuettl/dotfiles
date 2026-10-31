@@ -6,7 +6,7 @@ trap 'printf "\033[0;31mInstallation failed!\033[0m\n" >&2' ERR
 
 # Packages
 basic_tools=(curl tar)
-useful_tools=(wget git)
+useful_tools=(wget git htop ncdu)
 terminal_handling=(tmux bash zsh rsync)
 neovim_dependencies=(fzf fd-find ripgrep luarocks python3-pip)
 ubuntu_dependencies=(python3-venv)
@@ -67,6 +67,24 @@ install_deps() {
         "${terminal_handling[@]}" \
         "${neovim_dependencies[@]}" \
         "${rhel_dependencies[@]}"
+
+      ;;
+
+    fedora)
+      echo "System is fedora."
+
+      echo "Installing dependencies..."
+
+      echoandrun sudo yum install -y \
+        "${basic_tools[@]}" \
+        "${useful_tools[@]}" \
+        "${terminal_handling[@]}" \
+        "${neovim_dependencies[@]}" \
+        "${rhel_dependencies[@]}" \
+        "neovim"
+
+      # We can install from rpm, so exit with success
+      exit 0
 
       ;;
 
