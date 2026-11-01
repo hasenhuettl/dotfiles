@@ -21,17 +21,39 @@ fi
 
 # Check for high filesystem usage
 check_disk_usage() {
-  df -"$1" -x iso9660 -x udf |
-    awk -v threshold="$2" '
-      NR == 1 { header = $0; next }
+  local options="$1"
+  local threshold="$2"
+
+  # Exclude virtual and temporary filesystems
+  df -"$options" \
+    -x iso9660 \
+    -x udf \
+    -x efivarfs \
+    -x tmpfs \
+    -x devtmpfs |
+    awk -v threshold="$threshold" '
+      NR == 1 {
+        header = $0
+        next
+      }
+
+      # Check filesystems exceeding threshold.
       $5+0 > threshold &&
+
+      # Ignore /tmp/[Folder].
+      $6 !~ /^\/tmp(\/|$)/ &&
+
+      # Exclude /usr/lib/[modules|linux-tools].
       $6 !~ /^\/usr\/lib\/(modules|linux-tools)(\/|$)/ {
         rows = rows $0 ORS
       }
+
+      # Print header and matching entries only.
       END {
         if (rows != "")
           printf "%s\n%s", header, rows
-      }'
+      }
+    '
 }
 
 # Check for high filesystem usage
