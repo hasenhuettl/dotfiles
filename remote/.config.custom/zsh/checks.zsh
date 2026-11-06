@@ -23,37 +23,52 @@ fi
 check_disk_usage() {
   local options="$1"
   local threshold="$2"
+  local output rc
 
+  # For monitoring, use something like 5-10 seconds
   # Exclude virtual and temporary filesystems
-  df -"$options" \
-    -x iso9660 \
-    -x udf \
-    -x efivarfs \
-    -x tmpfs \
-    -x devtmpfs |
-    awk -v threshold="$threshold" '
-      NR == 1 {
-        header = $0
-        next
-      }
+  output=$(
+    timeout 1s df -"$options" \
+        -x iso9660 \
+        -x udf \
+        -x efivarfs \
+        -x tmpfs \
+        -x devtmpfs \
+        2>&1
+  )
+  rc=$?
 
-      # Check filesystems exceeding threshold.
-      $5+0 > threshold &&
+  if [ $rc -eq 124 ]; then
+    echo "ERROR: 'df' timed out! Is a mounted remote share unreachable (nsf, smb, ...)?" >&2
+    return 1
+  elif [ $rc -ne 0 ]; then
+    echo "ERROR: 'df' failed: $output" >&2
+    return $rc
+  fi
 
-      # Ignore /tmp/[Folder].
-      $6 !~ /^\/tmp(\/|$)/ &&
+  awk -v threshold="$threshold" '
+    NR == 1 {
+      header = $0
+      next
+    }
 
-      # Exclude /usr/lib/[modules|linux-tools].
-      $6 !~ /^\/usr\/lib\/(modules|linux-tools)(\/|$)/ {
-        rows = rows $0 ORS
-      }
+    # Check filesystems exceeding threshold.
+    $5+0 > threshold &&
 
-      # Print header and matching entries only.
-      END {
-        if (rows != "")
-          printf "%s\n%s", header, rows
-      }
-    '
+    # Ignore /tmp/[Folder].
+    $6 !~ /^\/tmp(\/|$)/ &&
+
+    # Exclude /usr/lib/[modules|linux-tools].
+    $6 !~ /^\/usr\/lib\/(modules|linux-tools)(\/|$)/ {
+      rows = rows $0 ORS
+    }
+
+    # Print header and matching entries only.
+    END {
+      if (rows != "")
+        printf "%s\n%s", header, rows
+    }
+  ' <<< "$output"
 }
 
 # Check for high filesystem usage
@@ -75,7 +90,7 @@ fi
 if command -v getenforce &>/dev/null; then
   selinux_status=$(getenforce)
   if [[ "$selinux_status" ]]; then
-    echo "Selinux status: $selinux_status"
+    echo "SELinux: $selinux_status"
   fi
 fi
 
