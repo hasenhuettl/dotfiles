@@ -89,7 +89,7 @@ fi
 # Selinux status
 if command -v getenforce &>/dev/null; then
   selinux_status=$(getenforce)
-  if [[ "$selinux_status" ]]; then
+  if [[ -n "$selinux_status" ]]; then
     echo "SELinux: $selinux_status"
   fi
 fi
