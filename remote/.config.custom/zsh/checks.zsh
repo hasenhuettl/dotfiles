@@ -1,22 +1,32 @@
-# Is systemd available and running?
-if ! command -v systemctl &>/dev/null; then
-  echo "⚠ Systemd is not available."
-elif ! systemctl is-system-running >/dev/null 2>&1; then
-  echo "⚠ Systemd is not running."
-else
+# Check for systemd errors
+check_systemd() {
   # Show failed systemd services
   failed_services=$(systemctl --failed --no-legend --plain 2>/dev/null)
 
   if [[ -n "$failed_services" ]]; then
-    echo
     echo "⚠ Failed systemd services detected:"
-    systemctl --failed --no-pager
-    echo
+    systemctl --failed --no-legend
   fi
 
   # Detect clock drift (NTP not synchronized)
   timedatectl show -p NTPSynchronized --value | \
   grep -q yes || echo "⚠ NTP not synchronized"
+}
+
+# Is systemd available and running?
+if ! command -v systemctl &>/dev/null; then
+  echo "⚠ Systemd is not available."
+else
+  state=$(systemctl is-system-running 2>/dev/null)
+
+  case "$state" in
+    running|degraded)
+      check_systemd
+      ;;
+    *)
+      echo "⚠ Systemd is not running (state: ${state:-unknown})."
+      ;;
+  esac
 fi
 
 # Check for high filesystem usage
