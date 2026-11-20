@@ -1,7 +1,12 @@
+#!/bin/bash
+
 # Path
-if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
-then
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
   PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
+
+if [[ -d "$HOME/.local/share/nvim/mason/bin" ]]; then
+  PATH="$PATH:$HOME/.local/share/nvim/mason/bin" # add mason linters to PATH
 fi
 
 PATH="$PATH:/opt/nvim-linux-x86_64/bin" # add nvim to PATH
