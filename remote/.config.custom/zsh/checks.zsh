@@ -47,28 +47,35 @@ check_disk_usage() {
   fi
 
   awk -v threshold="$threshold" '
-    NR == 1 {
-      header = $0
-      next
-    }
+  NR == 1 {
+    header = $0
+    next
+  }
 
-    # Check filesystems exceeding threshold.
-    $5+0 > threshold &&
+  {
+    cmd = "findmnt -n -o OPTIONS --target \"" $6 "\" 2>/dev/null"
+    cmd | getline opts
+    close(cmd)
+  }
 
-    # Ignore /tmp/[Folder].
-    $6 !~ /^\/tmp(\/|$)/ &&
+  $5+0 > threshold &&
 
-    # Exclude /usr/lib/[modules|linux-tools].
-    $6 !~ /^\/usr\/lib\/(modules|linux-tools)(\/|$)/ {
-      rows = rows $0 ORS
-    }
+  # Ignore read-only filesystems.
+  opts !~ /(^|,)ro(,|$)/ &&
 
-    # Print header and matching entries only.
-    END {
-      if (rows != "")
-        printf "%s\n%s", header, rows
-    }
-  ' <<< "$output"
+  # Ignore /tmp/[Folder].
+  $6 !~ /^\/tmp(\/|$)/ &&
+
+  # Exclude /usr/lib/[modules|linux-tools].
+  $6 !~ /^\/usr\/lib\/(modules|linux-tools)(\/|$)/ {
+    rows = rows $0 ORS
+  }
+
+  END {
+    if (rows != "")
+      printf "%s\n%s", header, rows
+  }
+' <<< "$output"
 }
 
 # Check for high filesystem usage
